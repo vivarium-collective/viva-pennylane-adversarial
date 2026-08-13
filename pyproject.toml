@@ -33,7 +33,7 @@ dependencies = [
     "pypdf>=4.0",
     "matplotlib",
     "plotly",
-    "vivarium-dashboard",
+    "vivarium-workbench",
     "polars",
     "scikit-learn>=1.3",
     "marimo[recommended]>=0.23.13",
@@ -53,7 +53,13 @@ packages = ["pbg_pennylane_adversarial", "app"]
 testpaths = ["tests"]
 
 [tool.uv.sources]
-vivarium-dashboard = { path = "/Users/alexanderpatrie/vivarium-app/vivarium-dashboard", editable = true }
+# The workspace dashboard/publish runtime (import package `vivarium_dashboard`,
+# CLI `vivarium-dashboard`) was renamed to the `vivarium-workbench` distribution;
+# it isn't on PyPI, so resolve it from git main. The wheel still ships the
+# `vivarium_dashboard` back-compat import shim + the `vivarium-dashboard` console
+# script, so this repo's `from vivarium_dashboard...` imports and `serve` CMD
+# keep working. Never commit a local absolute filesystem path as a uv source.
+vivarium-workbench = { git = "https://github.com/vivarium-collective/vivarium-workbench.git", branch = "main" }
 
 [dependency-groups]
 cli = [
