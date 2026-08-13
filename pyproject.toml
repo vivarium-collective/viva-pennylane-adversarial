@@ -39,6 +39,15 @@ dependencies = [
     "marimo[recommended]>=0.23.13",
 ]
 
+[project.optional-dependencies]
+# `dev` is the extra the workspace-ci workflow installs (`uv pip install
+# -e ".[dev]"`) to get the test runner. pytest-timeout registers the
+# `@pytest.mark.timeout` marker the pipeline tests use.
+dev = [
+    "pytest>=8",
+    "pytest-timeout>=2.3",
+]
+
 [project.scripts]
 adversarial = "app.cli:main"
 
