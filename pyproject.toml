@@ -3,7 +3,7 @@ requires = ["hatchling>=1.18"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pbg-pennylane-adversarial"
+name = "viva-pennylane-adversarial"
 version = "0.1.0"
 description = "Process-bigraph wrapper for PennyLane adversarial attacks on QML classifiers"
 readme = "README.md"
@@ -38,6 +38,11 @@ dependencies = [
     "scikit-learn>=1.3",
     "marimo[recommended]>=0.23.13",
 ]
+
+[project.optional-dependencies]
+# CI installs `.[dev]` (workspace-ci.yml) and runs `uv sync --extra dev`
+# (publish-reports.yml); this extra supplies the test tooling it expects.
+dev = ["pytest"]
 
 [project.scripts]
 adversarial = "app.cli:main"
