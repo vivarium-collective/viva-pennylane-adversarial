@@ -42,7 +42,7 @@ dependencies = [
 [project.optional-dependencies]
 # CI installs `.[dev]` (workspace-ci.yml) and runs `uv sync --extra dev`
 # (publish-reports.yml); this extra supplies the test tooling it expects.
-dev = ["pytest"]
+dev = ["pytest", "typer", "rich"]
 
 [project.scripts]
 adversarial = "app.cli:main"
