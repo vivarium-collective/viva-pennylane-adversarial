@@ -1,9 +1,9 @@
 [build-system]
-requires = ["hatchling>=1.18"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
 
 [project]
-name = "pbg-pennylane-adversarial"
+name = "viva-pennylane-adversarial"
 version = "0.1.0"
 description = "Process-bigraph wrapper for PennyLane adversarial attacks on QML classifiers"
 readme = "README.md"
@@ -39,6 +39,11 @@ dependencies = [
     "marimo[recommended]>=0.23.13",
 ]
 
+[project.optional-dependencies]
+# CI installs `.[dev]` (workspace-ci.yml) and runs `uv sync --extra dev`
+# (publish-reports.yml); this extra supplies the test tooling it expects.
+dev = ["pytest", "typer", "rich"]
+
 [project.scripts]
 adversarial = "app.cli:main"
 
@@ -46,8 +51,16 @@ adversarial = "app.cli:main"
 Homepage = "https://github.com/anomalyco/pbg-pennylane-adversarial"
 Issues = "https://github.com/anomalyco/pbg-pennylane-adversarial/issues"
 
-[tool.hatch.build.targets.wheel]
-packages = ["pbg_pennylane_adversarial", "app"]
+# setuptools' editable install writes a ``top_level.txt`` into the dist-info,
+# which ``importlib.metadata.packages_distributions()`` needs in order to map
+# the ``pbg_pennylane_adversarial`` import package back to this distribution.
+# bigraph-schema's ``allocate_core()`` package discovery relies on that mapping
+# to find and register ``PennyLaneAdversarialProcess`` (via ``local:`` address).
+# The previous hatchling backend produced a bare ``.pth`` editable install with
+# no ``top_level.txt`` and no file records, so the process was never discovered
+# and ``local:PennyLaneAdversarialProcess`` failed to resolve under ``-e``.
+[tool.setuptools.packages.find]
+include = ["pbg_pennylane_adversarial*", "app*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

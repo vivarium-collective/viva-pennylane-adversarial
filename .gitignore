@@ -9,7 +9,6 @@ demo/*.png
 output/
 *.nc
 .idea/
-.pbg/
 uv.lock
 datasets/
 

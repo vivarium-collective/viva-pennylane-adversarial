@@ -6,11 +6,20 @@ import tempfile
 from pathlib import Path
 
 import polars as pl
+import re
+
 from typer.testing import CliRunner
 
 from app.cli import cli
 
 runner = CliRunner()
+
+_ANSI = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def _plain(text: str) -> str:
+    """Strip ANSI colour codes so option names aren't split by escapes."""
+    return _ANSI.sub("", text)
 
 
 def _hive_history() -> Path:
@@ -27,10 +36,16 @@ def _hive_history() -> Path:
 
 
 def test_help():
-    result = runner.invoke(cli, ["datasets", "from-wcm", "--help"])
+    # Force a wide terminal: rich/typer truncate the options panel at the
+    # default 80 cols in CI, dropping long option names. Strip ANSI too, since
+    # rich wraps each flag in colour escapes that split "--feature-cols".
+    result = runner.invoke(
+        cli, ["datasets", "from-wcm", "--help"], env={"COLUMNS": "200"}
+    )
     assert result.exit_code == 0
-    assert "--feature-cols" in result.output
-    assert "--target-col" in result.output
+    out = _plain(result.output)
+    assert "--feature-cols" in out
+    assert "--target-col" in out
 
 
 def test_no_target_col_lists_candidates():

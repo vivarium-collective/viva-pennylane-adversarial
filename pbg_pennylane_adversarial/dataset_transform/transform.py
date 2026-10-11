@@ -52,8 +52,20 @@ def encode_labels(series: pl.Series) -> tuple[pl.Series, dict[int, str]]:
     else:
         cat = series.cast(pl.Categorical)
         physical = cat.to_physical().cast(pl.Int64)
-        categories = cat.cat.get_categories().to_list()
-        mapping = {i: str(categories[i]) for i in range(len(categories))}
+        # polars 2.0 removed Series.cat.get_categories(); recover the
+        # physical-code -> original-label mapping by pairing each physical
+        # code with its source string value (one row per distinct code).
+        pairs = (
+            pl.DataFrame({"code": physical, "label": series.cast(pl.Utf8)})
+            .unique(subset="code")
+            .sort("code")
+        )
+        mapping = {
+            int(code): str(label)
+            for code, label in zip(
+                pairs["code"].to_list(), pairs["label"].to_list()
+            )
+        }
         return physical, mapping
 
 
