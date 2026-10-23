@@ -4,8 +4,8 @@
 # `vivarium-workbench add-dashboard`; run it locally to preview the bundle.
 set -euo pipefail
 WS_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-OUT="${1:-$WS_ROOT/reports/published/dashboard}"
-BASE_PATH="/viva-pennylane-adversarial/dashboard"
+OUT="${1:-$WS_ROOT/reports/published/workbench}"
+BASE_PATH="/viva-pennylane-adversarial/workbench"
 INTERACTIVE_URL="https://github.com/vivarium-collective/viva-pennylane-adversarial"
 rm -rf "$OUT"
 PYTHONPATH="$WS_ROOT${PYTHONPATH:+:$PYTHONPATH}" \
@@ -16,4 +16,4 @@ PYTHONPATH="$WS_ROOT${PYTHONPATH:+:$PYTHONPATH}" \
     --interactive-url "$INTERACTIVE_URL"
 find "$OUT" -name '*.map' -delete
 touch "$OUT/.nojekyll"
-echo "built read-only dashboard bundle at $OUT ($(du -sh "$OUT" | cut -f1))"
+echo "built read-only workbench bundle at $OUT ($(du -sh "$OUT" | cut -f1))"
